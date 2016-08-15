@@ -51,12 +51,16 @@ import java.nio.file.Paths;
  * @author quintana.thomas@gmail.com (Thomas Quintana)
  */
 public final class DiskCache extends UntypedActor {
+    private static final String TTS_WAV_PATH_PREAMBLE = System.getProperty("java.io.tmpdir");
 
     // Logger.
     private final LoggingAdapter logger = Logging.getLogger(getContext().system(), this);
 
     private final String location;
     private final String uri;
+
+    // flag for cache disabling in *.wav files usage case
+    private boolean wavNoCache = false;
 
     public DiskCache(final String location, final String uri, final boolean create) {
         super();
@@ -87,6 +91,11 @@ public final class DiskCache extends UntypedActor {
 
     public DiskCache(final String location, final String uri) {
         this(location, uri, false);
+    }
+
+    public DiskCache(final String location, final String uri, final boolean create, final boolean wavNoCache) {
+        this(location, uri, create);
+        this.wavNoCache = wavNoCache;
     }
 
     private URI cache(final Object message) throws IOException, URISyntaxException {
@@ -202,20 +211,44 @@ public final class DiskCache extends UntypedActor {
         return path.substring(path.lastIndexOf(".") + 1);
     }
 
+    private Object getResponse(final Object message) throws Exception {
+        if (wavNoCache) {
+            // final DiskCacheRequest request = (DiskCacheRequest) message;
+            URI uri = ((DiskCacheRequest) message).uri();
+            String path = uri.getPath();
+
+            if("file".equalsIgnoreCase(uri.getScheme()) && path.endsWith(".wav") &&
+               path.contains(TTS_WAV_PATH_PREAMBLE)) {
+                return uri;
+            }
+        }
+
+        DiskCacheResponse response;
+        try {
+            response = new DiskCacheResponse(cache(message));
+        } catch (final Exception exception) {
+            logger.error("Error while chaching", exception);
+            response = new DiskCacheResponse(exception);
+        }
+
+        return response;
+    }
+
     @Override
     public void onReceive(final Object message) throws Exception {
         final Class<?> klass = message.getClass();
         final ActorRef self = self();
         final ActorRef sender = sender();
         if (DiskCacheRequest.class.equals(klass)) {
-            DiskCacheResponse response = null;
-            try {
-                response = new DiskCacheResponse(cache(message));
-            } catch (final Exception exception) {
-                logger.error("Error while chaching", exception);
-                response = new DiskCacheResponse(exception);
-            }
-            sender.tell(response, self);
+//            DiskCacheResponse response = null;
+//            try {
+//                response = new DiskCacheResponse(cache(message));
+//            } catch (final Exception exception) {
+//                logger.error("Error while chaching", exception);
+//                response = new DiskCacheResponse(exception);
+//            }
+//            sender.tell(response, self);
+            sender.tell(getResponse(message), self);
         }
     }
 }
