@@ -5,24 +5,21 @@ import org.mobicents.servlet.restcomm.configuration.RestcommConfiguration;
 import org.mobicents.servlet.restcomm.configuration.sets.CacheConfigurationSet;
 
 public final class DiskCacheFactory {
-    CacheConfigurationSet cfg;
-    private boolean wavNoCache;
+
+    private final CacheConfigurationSet cfg;
+
+    private final FileDownloader downloader;
 
     public DiskCacheFactory(Configuration cfg) {
-        this.wavNoCache = cfg.subset("runtime-settings").getBoolean("cache-no-wav", false);
+        this(new RestcommConfiguration(cfg));
     }
 
     public DiskCacheFactory(RestcommConfiguration cfg) {
         this.cfg = cfg.getCache();
-
-        wavNoCache = this.cfg.isNoWavCache();
-    }
-
-    public DiskCache getDiskCache(final String location, final String uri) {
-        return new DiskCache(location, uri, false, wavNoCache);
+        this.downloader = new FileDownloader();
     }
 
     public DiskCache getDiskCache() {
-        return getDiskCache(cfg.getCachePath(), cfg.getCacheUri());
+        return new DiskCache(downloader, this.cfg.getCachePath(), this.cfg.getCacheUri(), false, cfg.isNoWavCache());
     }
 }
