@@ -21,7 +21,7 @@ import java.net.URI;
 /**
  * Created by gdubina on 16.08.2016.
  */
-public class WavNoCaсheTest {
+public class WavNoCacheTest {
 
     private URI externalUrl = URI.create("http://external/file.wav");
     private String cacheUri = "http://127.0.0.1";
