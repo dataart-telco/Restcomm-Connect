@@ -29,7 +29,7 @@
 
 		<!-- If set to true RestComm will not use cache for *.wav files playback.
 			If set to false RestComm will use use cache for *.wav files playback. -->
-	<!--	<cache-no-wav>false</cache-no-wav> -->
+		<cache-no-wav>false</cache-no-wav>
 
 		<!-- The path where recordings made by the <Record> verb are stored. -->
 		<recordings-path>file://${restcomm:home}/recordings</recordings-path>

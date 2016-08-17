@@ -87,6 +87,11 @@ public final class DiskCache extends UntypedActor {
         this(downloader, cacheDir, cacheUri, false);
     }
 
+    // constructor for compatibility with existing tests
+    public DiskCache(final String cacheDir, final String cacheUri, final boolean create) {
+        this(new FileDownloader(), cacheDir, cacheUri, create, false);
+    }
+
     public URI cache(final DiskCacheRequest request) throws IOException, URISyntaxException {
         if (wavNoCache) {
             URI uri = request.uri();

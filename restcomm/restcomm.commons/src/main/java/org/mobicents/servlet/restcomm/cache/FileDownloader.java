@@ -14,11 +14,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Created by gdubina on 16.08.2016.
+ * @author Gennadiy Dubina
  */
 public class FileDownloader {
 
-    public File download(URI requestUri, File pathToSave) throws IOException, URISyntaxException {
+public URI download(URI requestUri, File pathToSave) throws IOException, URISyntaxException {
         final File tmp = new File(pathToSave + "." + "tmp");
         InputStream input = null;
         OutputStream output = null;
@@ -43,8 +43,8 @@ public class FileDownloader {
                     String requestUrl = httpRequest.getRequestLine().getUri();
                     String errorReason = httpResponse.getStatusLine().getReasonPhrase();
                     String httpErrorMessage = String.format(
-                            "Error while fetching http resource: %s \n Http error code: %d \n Http error message: %s", requestUrl,
-                            code, errorReason);
+                            "Error while fetching http resource: %s \n Http error code: %d \n Http error message: %s",
+                            requestUrl, code, errorReason);
                     throw new IOException(httpErrorMessage);
                 }
                 input = httpResponse.getEntity().getContent();
@@ -77,6 +77,7 @@ public class FileDownloader {
                 client = null;
             }
         }
-        return pathToSave;
+
+        return pathToSave.toURI();
     }
 }

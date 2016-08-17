@@ -22,4 +22,9 @@ public final class DiskCacheFactory {
     public DiskCache getDiskCache() {
         return new DiskCache(downloader, this.cfg.getCachePath(), this.cfg.getCacheUri(), false, cfg.isNoWavCache());
     }
+
+    // constructor for compatibility with existing cache implementation
+    public DiskCache getDiskCache(final String cachePath, final String cacheUri) {
+        return new DiskCache(downloader, cachePath, cacheUri, true, cfg.isNoWavCache());
+    }
 }

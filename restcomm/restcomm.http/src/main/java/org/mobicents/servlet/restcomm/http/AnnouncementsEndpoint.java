@@ -180,7 +180,6 @@ public abstract class AnnouncementsEndpoint extends SecuredEndpoint {
 
             @Override
             public Actor create() throws Exception {
-//                return new DiskCache(path, uri, true);
                 return new DiskCacheFactory(configuration).getDiskCache(path, uri);
             }
         }));
