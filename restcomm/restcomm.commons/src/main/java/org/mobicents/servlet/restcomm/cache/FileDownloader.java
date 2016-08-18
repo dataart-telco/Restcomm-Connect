@@ -9,7 +9,11 @@ import org.apache.http.client.utils.URIBuilder;
 import org.mobicents.servlet.restcomm.configuration.RestcommConfiguration;
 import org.mobicents.servlet.restcomm.http.CustomHttpClientBuilder;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
